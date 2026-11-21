@@ -1,0 +1,120 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  MPLBACKEND: Agg
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: |
+          python -m pip install --upgrade "pip>=25.1"
+          python -m pip install --group lint
+      - run: ruff check .
+      - run: ruff format --check .
+
+  test:
+    name: test (${{ matrix.os }}, Python ${{ matrix.python }}${{ matrix.matplotlib && format(', matplotlib {0}', matrix.matplotlib) || '' }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: ["3.11", "3.12", "3.13", "3.14"]
+        include:
+          # Oldest supported Matplotlib, on the oldest supported Python.
+          - os: ubuntu-latest
+            python: "3.11"
+            matplotlib: "3.9.*"
+          # Members also work on local Windows and macOS installations.
+          - os: windows-latest
+            python: "3.13"
+          - os: macos-latest
+            python: "3.13"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Install
+        run: |
+          python -m pip install --upgrade "pip>=25.1"
+          python -m pip install --group test -e .
+      - name: Pin the oldest supported Matplotlib
+        if: matrix.matplotlib
+        run: python -m pip install "matplotlib==${{ matrix.matplotlib }}"
+      - run: python -m pytest -m "not slow"
+
+  gallery:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install
+        run: |
+          python -m pip install --upgrade "pip>=25.1"
+          python -m pip install --group test --group gallery -e .
+      - name: Execute the example gallery
+        run: python -m pytest -m slow
+
+  wheel:
+    # Builds the sdist, builds the wheel from it, and runs the test suite
+    # against the installed wheel in a clean environment, away from src/.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Build
+        run: |
+          python -m pip install --upgrade "pip>=25.1" "build>=1.2"
+          python -m build
+      - name: Check distribution contents
+        run: |
+          python - <<'EOF'
+          import glob, zipfile
+          names = zipfile.ZipFile(glob.glob("dist/*.whl")[0]).namelist()
+          required = [
+              "icc_style/fonts/Poppins-Regular.ttf",
+              "icc_style/fonts/Poppins-Bold.ttf",
+              "icc_style/fonts/OFL.txt",
+              "icc_style/styles/icc.mplstyle",
+              "icc_style/styles/presentation.mplstyle",
+              "icc_style/styles/publication.mplstyle",
+          ]
+          missing = [name for name in required if name not in names]
+          assert not missing, missing
+          EOF
+      - name: Install the wheel in a fresh virtual environment
+        run: |
+          python -m venv "$RUNNER_TEMP/venv"
+          "$RUNNER_TEMP/venv/bin/python" -m pip install --upgrade "pip>=25.1"
+          "$RUNNER_TEMP/venv/bin/python" -m pip install dist/*.whl
+          "$RUNNER_TEMP/venv/bin/python" -m pip install --group test
+      - name: Test the installed wheel
+        run: |
+          cp -r tests "$RUNNER_TEMP/tests"
+          cd "$RUNNER_TEMP"
+          "$RUNNER_TEMP/venv/bin/python" -c "import icc_style; print(icc_style.__file__)"
+          "$RUNNER_TEMP/venv/bin/python" -m pytest -p no:cacheprovider tests

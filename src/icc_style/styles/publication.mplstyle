@@ -1,0 +1,26 @@
+## ICC Style: "publication" context. Apply on top of icc.mplstyle.
+##
+## For articles, reports and the ICC website: the figure matches the text
+## width of an A4/Letter page (6.3 in) and uses compact type and thinner
+## marks, so that a figure placed at 100% scale has 9 pt body text, close to
+## the surrounding prose.
+
+figure.figsize:         6.3, 3.9
+font.size:              9
+
+axes.linewidth:         0.6
+axes.titlepad:          8
+axes.labelpad:          4
+grid.linewidth:         0.6
+
+xtick.major.size:       2.5
+xtick.major.width:      0.6
+xtick.major.pad:        3
+ytick.major.width:      0.6
+ytick.major.pad:        3
+
+lines.linewidth:        1.5
+lines.markersize:       4.5
+lines.markeredgewidth:  0.75
+patch.linewidth:        0.5
+boxplot.medianprops.linewidth: 1.5

@@ -1,0 +1,24 @@
+## ICC Style: "presentation" context. Apply on top of icc.mplstyle.
+##
+## For slides and projection: a 16:9 figure, larger type and heavier marks so
+## that tick labels stay legible from the back of a room. At the default size,
+## tick labels are ~11.7 pt when the figure fills a 10-inch-wide slide area.
+
+figure.figsize:         10, 5.625
+font.size:              14
+
+axes.linewidth:         1.0
+axes.titlepad:          12
+axes.labelpad:          8
+grid.linewidth:         1.0
+
+xtick.major.size:       4
+xtick.major.width:      1.0
+xtick.major.pad:        6
+ytick.major.width:      1.0
+ytick.major.pad:        6
+
+lines.linewidth:        3.0
+lines.markersize:       8
+patch.linewidth:        1.0
+boxplot.medianprops.linewidth: 3.0

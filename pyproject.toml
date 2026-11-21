@@ -1,0 +1,84 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "icc-style"
+dynamic = ["version"]
+description = "Matplotlib and Seaborn theme implementing the Insper Consulting Club visual identity."
+readme = "README.md"
+requires-python = ">=3.11"
+# The package code is BSD-3-Clause; the bundled Poppins fonts are distributed
+# under the SIL Open Font License 1.1.
+license = "BSD-3-Clause AND OFL-1.1"
+license-files = ["LICENSE", "src/icc_style/fonts/OFL.txt"]
+authors = [{ name = "Liga Insper Consulting Club, Technology Division" }]
+keywords = ["matplotlib", "seaborn", "style", "theme", "data visualization", "insper"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Matplotlib",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Typing :: Typed",
+]
+dependencies = ["matplotlib>=3.9"]
+
+[project.optional-dependencies]
+seaborn = ["seaborn>=0.13"]
+
+[project.urls]
+Homepage = "https://github.com/insper-consulting-club/icc-style"
+Source = "https://github.com/insper-consulting-club/icc-style"
+Issues = "https://github.com/insper-consulting-club/icc-style/issues"
+
+[dependency-groups]
+test = ["pytest>=8", "seaborn>=0.13", "pandas>=2"]
+gallery = ["numpy>=1.24", "pandas>=2", "seaborn>=0.13", "nbclient>=0.10", "nbformat>=5.10", "ipykernel>=6"]
+lint = ["ruff==0.17.3"]
+dev = [
+    { include-group = "test" },
+    { include-group = "gallery" },
+    { include-group = "lint" },
+    "build>=1.2",
+]
+
+[tool.hatch.version]
+path = "src/icc_style/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/icc_style"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/icc_style",
+    "tests",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers"]
+markers = ["slow: executes the full example gallery notebook"]
+filterwarnings = ["error::DeprecationWarning:icc_style.*"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+extend-include = ["*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "PT", "NPY"]
+ignore = ["RUF001", "RUF002", "RUF003"]  # en dashes and minus signs are intentional
+
+[tool.ruff.lint.per-file-ignores]
+"examples/*.ipynb" = ["E501"]

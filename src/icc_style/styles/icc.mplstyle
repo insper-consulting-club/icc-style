@@ -1,0 +1,139 @@
+## ICC Style: base Matplotlib style sheet (the "default" context).
+##
+## Usage without Python setup:   plt.style.use("icc_style.styles.icc")
+## Combine with a context:       plt.style.use(["icc_style.styles.icc",
+##                                              "icc_style.styles.presentation"])
+##
+## The style sheet only *requests* the Poppins font. Matplotlib can use it only
+## if Poppins is registered: either call icc_style.set_theme() /
+## icc_style.register_fonts(), or install Poppins on the system. Loading this
+## sheet through its dotted name imports icc_style, which registers the
+## bundled fonts automatically.
+##
+## Colors: #B20000, #7B001E, #1A1A1A and #FFFFFF are the official ICC brand
+## colors. Every other color in this file is an analytical extension.
+
+## Figure ----------------------------------------------------------------------
+figure.figsize:                 8, 4.5
+figure.dpi:                     100
+figure.facecolor:               FFFFFF
+figure.edgecolor:               FFFFFF
+figure.titlesize:               x-large
+figure.titleweight:             bold
+figure.labelsize:               medium
+figure.labelweight:             normal
+figure.constrained_layout.use:  True
+figure.constrained_layout.h_pad: 0.06
+figure.constrained_layout.w_pad: 0.06
+
+## Typography ------------------------------------------------------------------
+## Poppins first; DejaVu Sans (bundled with Matplotlib) supplies glyphs that
+## Poppins lacks, such as Greek letters and arrows.
+font.family:        Poppins, DejaVu Sans
+font.size:          10
+font.weight:        normal
+text.color:         1A1A1A
+mathtext.default:   regular
+
+## Axes ------------------------------------------------------------------------
+axes.facecolor:         FFFFFF
+axes.edgecolor:         4D4D4D
+axes.linewidth:         0.8
+axes.spines.top:        False
+axes.spines.right:      False
+axes.spines.left:       False
+axes.spines.bottom:     True
+axes.grid:              True
+axes.grid.axis:         y
+axes.grid.which:        major
+axes.axisbelow:         True
+axes.titlesize:         large
+axes.titleweight:       bold
+axes.titlecolor:        1A1A1A
+axes.titlelocation:     left
+axes.titlepad:          10
+axes.labelsize:         medium
+axes.labelweight:       normal
+axes.labelcolor:        1A1A1A
+axes.labelpad:          6
+axes.formatter.limits:  -5, 6
+axes.formatter.useoffset: False
+axes.unicode_minus:     True
+## Primary red, then analytical extensions: blue, gold, teal, violet.
+axes.prop_cycle:        cycler('color', ['B20000', '1F66B5', 'A8770A', '0E8A7A', '8350B8'])
+
+## Ticks -----------------------------------------------------------------------
+xtick.color:            8C8C8C
+xtick.labelcolor:       4D4D4D
+xtick.labelsize:        small
+xtick.direction:        out
+xtick.major.size:       3
+xtick.major.width:      0.8
+xtick.major.pad:        4
+xtick.minor.visible:    False
+ytick.color:            8C8C8C
+ytick.labelcolor:       4D4D4D
+ytick.labelsize:        small
+ytick.direction:        out
+ytick.major.size:       0
+ytick.major.width:      0.8
+ytick.major.pad:        4
+ytick.minor.visible:    False
+
+## Grid ------------------------------------------------------------------------
+grid.color:             E1E1E1
+grid.linestyle:         -
+grid.linewidth:         0.8
+grid.alpha:             1.0
+
+## Lines and markers -----------------------------------------------------------
+lines.linewidth:        2.0
+lines.markersize:       6
+lines.markeredgewidth:  1.0
+lines.solid_capstyle:   round
+lines.dash_capstyle:    butt
+
+## Patches (bars, histograms, areas) -------------------------------------------
+## A thin white edge separates adjacent and stacked bars.
+patch.linewidth:        0.6
+patch.edgecolor:        FFFFFF
+patch.force_edgecolor:  True
+hatch.color:            FFFFFF
+hatch.linewidth:        1.0
+
+## Scatter: white rings keep overlapping markers distinguishable.
+scatter.marker:         o
+scatter.edgecolors:     white
+
+## Error bars and box plots ----------------------------------------------------
+errorbar.capsize:               0
+boxplot.boxprops.color:         4D4D4D
+boxplot.whiskerprops.color:     4D4D4D
+boxplot.capprops.color:         4D4D4D
+boxplot.medianprops.color:      B20000
+boxplot.medianprops.linewidth:  2.0
+boxplot.flierprops.marker:      o
+boxplot.flierprops.markeredgecolor: 8C8C8C
+boxplot.flierprops.markersize:  4
+
+## Legend ----------------------------------------------------------------------
+legend.frameon:         False
+legend.loc:             best
+legend.fontsize:        small
+legend.title_fontsize:  small
+legend.handlelength:    1.6
+legend.handleheight:    0.7
+legend.borderaxespad:   0.5
+legend.labelcolor:      1A1A1A
+
+## Dates -----------------------------------------------------------------------
+date.converter:         concise
+
+## Saving ----------------------------------------------------------------------
+## TrueType (type 42) embedding keeps PDF/PS text editable and selectable.
+## SVG text stays as paths (Matplotlib's default) so it renders identically
+## everywhere; icc_style.save_figure(..., svg_text="text") keeps editable text.
+savefig.dpi:            300
+pdf.fonttype:           42
+ps.fonttype:            42
+svg.fonttype:           path
